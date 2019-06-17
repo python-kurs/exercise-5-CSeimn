@@ -17,11 +17,13 @@ output_dir = Path("solution")
 #    Calculate monthly means for the reference periode 1981-2010 for Europe (Extent: Lon_min:-13, Lon_max: 25, Lat_min: 30, Lat_max: 72). [2P]
 data = xr.open_dataset(data_dir)
 data_ref = data.sel(latitude = slice(30, 72), longitude = slice(-13, 25), time = slice("1981-01-01", "2010-12-31"))
-data_nona = data_ref.fillna(value = "na")
-data_gr = 
+data_m = data_ref.groupby("time.month").mean("time")
 # 3. Calculate monthly anomalies from the reference period for the year 2018 (use the same extent as in #2).
 #    Make a quick plot of the anomalies for the region. [2P]
-
+data_ref_18 = data.sel(latitude = slice(30, 72), longitude = slice(-13, 25), time = slice("2018-01-01", "2018-12-31"))
+data_ref_18_m = data_ref_18.groupby("time.month").mean("time")
+anml_18 = data_ref_18_m - data_m
+anml_18["tg"].plot()
 
 # 4. Calculate the mean anomaly for the year 2018 for Europe (over all pixels of the extent from #2) 
 #    Compare this overall mean anomaly to the anomaly of the pixel which contains Marburg. 
