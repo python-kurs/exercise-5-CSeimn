@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 input_dir  = Path("../Data/")
 data_dir = input_dir / "tg_ens_mean_0.25deg_reg_v19.0e.nc" 
-output_dir = Path("solution")
+output_dir = Path("C:/Users/CSeimn/Documents/Master/2._Semester/Python_Kurs/exercise-5-CSeimn/solution")
 
 # 1. Go to http://surfobs.climate.copernicus.eu/dataaccess/access_eobs.php#datafiles
 #    and download the 0.25 deg. file for daily mean temperature.
@@ -28,7 +28,22 @@ anml_18["tg"].plot()
 # 4. Calculate the mean anomaly for the year 2018 for Europe (over all pixels of the extent from #2) 
 #    Compare this overall mean anomaly to the anomaly of the pixel which contains Marburg. 
 #    Is the anomaly of Marburg lower or higher than the one for Europe? [2P] 
+data_mean = data_ref.mean("time")
+meanml_18 = data_ref_18_m - data_mean
+
+anml_mar = meanml_18.sel(latitude = 50.81, longitude = 8.77, method = "nearest")
+# coord source: https://coordvert.com/de/koordinaten-umrechnen/place-P9zohW15Al/all
+
+if anml_mar > meanml_18:
+    print("Marburg's mean anomaly is higher than Europe's")
+elif anml_mar == meanml_18:
+    print("Marburg's and Europe's anomaly are equal")
+else:
+    print("Marburg's anomaly is lower than Europe's")
+
 
 
 # 5. Write the monthly anomalies from task 3 to a netcdf file with name "europe_anom_2018.nc" to the solution directory.
 #    Write the monthly anomalies for Marburg to a csv file with name "marburg_anom_2018.csv" to the solution directory. [2P]
+anml_18.to_netcdf(output_dir/"europe_anom_2018.nc")
+anml_mar.to_dataframe().to_csv(output_dir/"marburg_anom_2018.csv")
